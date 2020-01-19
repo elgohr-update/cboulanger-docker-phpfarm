@@ -13,7 +13,7 @@
 # Get the Docker hub user/repo so we know how to tag the built images and push
 # them to Docker hub.
 if [ -z "$1" ]; then
-  hubUserRepo='eugenesia/phpfarm'
+  hubUserRepo='cboulanger/docker-phpfarm'
   echo "hubuser/repo not provided, defaulting to $hubUserRepo"
 else
   hubUserRepo="$1"
@@ -29,8 +29,8 @@ docker build --squash -t ${hubUserRepo}:jessie -t \
 docker push ${hubUserRepo}:jessie
 docker push ${hubUserRepo}:latest
 
-docker build --squash -t ${hubUserRepo}:wheezy -f Dockerfile-Wheezy . > /tmp/build-wheezy.log 2>&1
-docker push ${hubUserRepo}:wheezy
+#docker build --squash -t ${hubUserRepo}:wheezy -f Dockerfile-Wheezy . > /tmp/build-wheezy.log 2>&1
+#docker push ${hubUserRepo}:wheezy
 
 # Disable verbose.
 set +vx

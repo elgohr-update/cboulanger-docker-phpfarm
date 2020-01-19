@@ -26,11 +26,18 @@ do
 
     # compile the PHP version
     ./compile.sh $VERSION
+
+    # Remove suffixes like "-pear" otherwise links don't work
+    VERSION=$(echo $VERSION| sed -e 's/[^0-9\.]//g')
+
     ln -s "/phpfarm/inst/php-$VERSION/" "/phpfarm/inst/php-$V"
     ln -s "/phpfarm/inst/bin/php-$VERSION" "/phpfarm/inst/bin/php-$V"
     ln -s "/phpfarm/inst/bin/php-cgi-$VERSION" "/phpfarm/inst/bin/php-cgi-$V"
     ln -s "/phpfarm/inst/bin/phpize-$VERSION" "/phpfarm/inst/bin/phpize-$V"
     ln -s "/phpfarm/inst/bin/php-config-$VERSION" "/phpfarm/inst/bin/php-config-$V"
+
+    # Install the PHP-YAZ extension
+    bash ./custom/install-php-yaz.sh $V || exit 1
 
     # compile xdebug
     if [ "$V" == "5.1" ] || [ "$V" == "5.2" ] || [ "$V" == "5.3" ]; then
@@ -62,6 +69,7 @@ do
     rm -rf xdebug-$XDBGVERSION && \
     rm -f $XDBGVERSION.tar.gz && \
     cat xdebug.ini >> /phpfarm/inst/php-$V/etc/php.ini
+
 
     # enable apache config - compatible with wheezy and jessie
     a2ensite php-$V.conf
