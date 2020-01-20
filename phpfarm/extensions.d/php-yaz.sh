@@ -1,4 +1,3 @@
-V=$1
 echo "--- installing YAZ for php $V ---------------------"
 
 INST_DIR=/phpfarm/inst/php-$V
@@ -12,7 +11,6 @@ MAKE_OPTIONS=""
 wget https://pecl.php.net/get/yaz-$PHPYAZVERSION.tgz && \
 tar -xzvf yaz-$PHPYAZVERSION.tgz && \
 cd yaz-$PHPYAZVERSION && \
-ls -al /phpfarm/inst/bin/ && \
 /phpfarm/inst/bin/phpize-$V && \
 ./configure --with-php-config=/phpfarm/inst/bin/php-config-$V && \
 make $MAKE_OPTIONS && \
@@ -25,8 +23,8 @@ rm -f yaz-$PHPYAZVERSION.tgz || exit 1
 # Check if YAZ installation has worked
 if $PHP_CMD -i | grep yaz --quiet && echo '<?php exit(function_exists("yaz_connect")?0:1);' | $PHP_CMD ; then echo "YAZ is installed"; else echo "YAZ installation failed"; exit 1; fi;
 
-# install needed PEAR_CMD libraries
-$PEAR_CMD channel-update pear.php.net
-$PEAR_CMD install Structures_LinkedList-0.2.2 && \
-$PEAR_CMD install File_MARC || exit 1
-
+# install needed PEAR_CMD libraries; not compatible with php 7.4
+if ! [ "$V" == "7.4" ] ; then
+  $PEAR_CMD install Structures_LinkedList-0.2.2 && \
+  $PEAR_CMD install File_MARC || exit 1
+fi

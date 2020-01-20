@@ -56,6 +56,8 @@ ENV \
     libzip-dev \
     # needed for bibliograph
     yaz libyaz4-dev bibutils \
+    # php 7.4
+    libonig-dev \
   " \
   # Packages needed to run Apache httpd.
   APACHE_PKGS="\
@@ -86,7 +88,7 @@ COPY apache /etc/apache2/
 COPY phpfarm /phpfarm_mod
 
 # The PHP versions to compile.
-ENV PHP_FARM_VERSIONS="7.0.33-pear 7.1.33-pear 7.2.25-pear 7.3.12-pear 7.4.0-pear x.x.x-pear" \
+ENV PHP_FARM_VERSIONS="7.0.33-pear 7.1.33-pear 7.2.25-pear 7.3.12-pear 7.4.0-pear" \
   \
   # Flags for C Compiler Loader: make php 5.3 work again.
   LDFLAGS="-lssl -lcrypto -lstdc++" \

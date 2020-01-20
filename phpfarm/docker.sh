@@ -7,7 +7,7 @@ if [ -z "$PHP_FARM_VERSIONS" ]; then
     exit 1
 fi
 
-export $MAKE_OPTIONS="-j$(nproc)"
+export MAKE_OPTIONS="-j$(nproc)"
 
 # fix freetype for older php https://stackoverflow.com/a/26342869
 mkdir /usr/include/freetype2/freetype
@@ -25,7 +25,7 @@ do
     V=$(echo $VERSION | awk -F. '{print $1"."$2}')
 
     # compile the PHP version
-    ./compile.sh $VERSION
+    ./compile.sh $VERSION || exit 1
 
     # Remove suffixes like "-pear" otherwise links don't work
     VERSION=$(echo $VERSION| sed -e 's/[^0-9\.]//g')
@@ -36,40 +36,11 @@ do
     ln -s "/phpfarm/inst/bin/phpize-$VERSION" "/phpfarm/inst/bin/phpize-$V"
     ln -s "/phpfarm/inst/bin/php-config-$VERSION" "/phpfarm/inst/bin/php-config-$V"
 
-    # Install the PHP-YAZ extension
-    bash ./custom/install-php-yaz.sh $V || exit 1
-
-    # compile xdebug
-    if [ "$V" == "5.1" ] || [ "$V" == "5.2" ] || [ "$V" == "5.3" ]; then
-        XDBGVERSION="XDEBUG_2_2_7" # old release for old PHP versions
-    elif [ "$V" == "5.4" ]; then
-        XDBGVERSION="XDEBUG_2_4_1" # old release for old PHP versions
-    elif [[ $VERSION == *"RC"* ]]; then
-        XDBGVERSION="master"       # master for RCs
-    elif [ "$V" == "5.5" ] || [ "$V" == "5.6" ]; then
-        XDBGVERSION="XDEBUG_2_5_5" # 2.5.X release for PHP 5.5 and 5.6
-    elif [ "$V" == "7.0" ] || [ "$V" == "7.1" ] || [ "$V" == "7.2" ]; then
-        XDBGVERSION="2.6.0" # 2.6.X release for PHP 7.0 - 7.2
-    else
-        XDBGVERSION="2.7.0beta1" # 7.3
-    fi
-
-    echo "--- compiling xdebug $XDBGVERSION for php $V ---------------------"
-
-    wget https://github.com/xdebug/xdebug/archive/$XDBGVERSION.tar.gz && \
-    tar -xzvf $XDBGVERSION.tar.gz && \
-    cd xdebug-$XDBGVERSION && \
-    phpize-$V && \
-    ./configure --enable-xdebug --with-php-config=/phpfarm/inst/bin/php-config-$V && \
-    make $MAKE_OPTIONS && \
-    cp -v modules/xdebug.so /phpfarm/inst/php-$V/lib/ && \
-    echo "zend_extension_debug = /phpfarm/inst/php-$V/lib/xdebug.so" >> /phpfarm/inst/php-$V/etc/php.ini && \
-    echo "zend_extension = /phpfarm/inst/php-$V/lib/xdebug.so" >> /phpfarm/inst/php-$V/etc/php.ini && \
-    cd .. && \
-    rm -rf xdebug-$XDBGVERSION && \
-    rm -f $XDBGVERSION.tar.gz && \
-    cat xdebug.ini >> /phpfarm/inst/php-$V/etc/php.ini
-
+    # install additional extensions
+    export VERSION V MAKE_OPTIONS
+    for installer in ./extensions.d/*.sh; do
+        bash $installer || exit 1
+    done
 
     # enable apache config - compatible with wheezy and jessie
     a2ensite php-$V.conf
