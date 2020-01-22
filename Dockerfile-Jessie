@@ -74,15 +74,13 @@ RUN apt-get update && \
     $APACHE_PKGS && \
     \
     # Clean up apt package lists.
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* \
+    # Reconfigure Apache
+    rm -rf /var/www/*
 
-
-# Reconfigure Apache
-RUN rm -rf /var/www/*
 # Import our Apache configs.
 COPY var-www /var/www/
 COPY apache /etc/apache2/
-
 
 # Import our own modifications for the PhpFarm script.
 COPY phpfarm /phpfarm_mod
@@ -95,7 +93,6 @@ ENV PHP_FARM_VERSIONS="7.0.33-pear 7.1.33-pear 7.2.25-pear 7.3.12-pear 7.4.0-pea
   \
   # Add path to built PHP executables, for module building and for Apache.
   PATH="/phpfarm/inst/bin/:$PATH"
-
 
 # Install packages needed for build.
 RUN apt-get update && \

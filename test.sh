@@ -6,7 +6,7 @@
 #   'wheezy'.
 
 # Name of Docker image to test.
-DOCKER_IMG=splitbrain/phpfarm
+DOCKER_IMG=cboulanger/docker-phpfarm
 
 # Tag of image to test e.g. 'latest', 'wheezy'.
 TAG=$1
@@ -19,7 +19,7 @@ fi
 # Ports to test for.
 if [ "$TAG" = jessie ]; then
     # Debian:Jessie supports PHP 5.3 and above only.
-    ports='8053 8054 8055 8056 8070 8071 8072 8073 8000'
+    ports='8070 8071 8072 8073 8074'
 else
     # Debian:Wheezy supports all versions til 7.2, no nightlies
     ports='8051 8052 8053 8054 8055 8056 8070 8071 8072'
