@@ -7,6 +7,8 @@ FROM philcryer/min-jessie:latest
 
 LABEL author="Andreas Gohr <andi@splitbrain.org>, Eugene Sia <eugene@eugenesia.co.uk>, Christian Boulanger <info@bibliograph.org>"
 
+c
+
 ENV \
   # Packages needed for running various build scripts.
   SCRIPT_PKGS=" \
@@ -58,7 +60,7 @@ ENV \
     # php 7.4
     libonig-dev \
   " \
-  # Packages needed to run Apache httpd.
+  # Packages needed to run Apache httpd
   APACHE_PKGS="\
     apache2 \
     apache2-mpm-prefork \
@@ -66,16 +68,16 @@ ENV \
     libapache2-mod-fcgid \
   "
 
-# Install packages we need for runtime usage.
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-    $RUNTIME_PKGS \
-    $APACHE_PKGS && \
-    \
-    # Clean up apt package lists.
-    rm -rf /var/lib/apt/lists/* \
-    # Reconfigure Apache
-    rm -rf /var/www/*
+RUN \
+  echo ">>> Installing packages we need for runtime usage" && \
+  apt-get update && \
+  apt-get install -y --no-install-recommends \
+  $RUNTIME_PKGS \
+  $APACHE_PKGS && \
+  # Clean up apt package lists
+  rm -rf /var/lib/apt/lists/* \
+  # Reconfigure Apache
+  rm -rf /var/www/*
 
 # Import our Apache configs.
 COPY var-www /var/www/
@@ -90,36 +92,28 @@ ENV PHP_FARM_VERSIONS="7.0.33-pear 7.1.33-pear 7.2.25-pear 7.3.12-pear 7.4.0-pea
   # Flags for C Compiler Loader: make php 5.3 work again.
   LDFLAGS="-lssl -lcrypto -lstdc++" \
   \
-  # Add path to built PHP executables, for module building and for Apache.
+  # Add path to built PHP executables, for module building and for Apache
   PATH="/phpfarm/inst/bin/:$PATH"
 
-# Install packages needed for build.
-RUN apt-get update && \
+RUN \
+  echo ">>> Installing packages needed for build" && \
+  apt-get update && \
   apt-get install -y --no-install-recommends $SCRIPT_PKGS $BUILD_PKGS && \
-  \
-  # Download PhpFarm scripts into /phpfarm/.
+  echo ">>> Downloading and patching PHPFarm" && \
   wget -O /phpfarm.tar.gz https://github.com/fpoirotte/phpfarm/archive/v0.3.0.tar.gz && \
   mkdir /phpfarm && \
   tar -xf /phpfarm.tar.gz -C /phpfarm --strip 1 && \
-  #
-  # Overwrite PhpFarm with our own modifications.
   rm -rf /phpfarm/src/bzips /phpfarm/src/custom && \
   mv /phpfarm_mod/* /phpfarm/src/ && \
-  #
-  # Wait for docker.sh to finish moving else trying to exec a file being
-  # written will output "Text file busy" error.
   sleep 5s && \
   rmdir /phpfarm_mod && \
-  #
-  # Build all PHP versions.
+  echo ">>> Building all PHP versions" && \
   cd /phpfarm/src && \
   ./docker.sh && \
-  #
-  # Clean up.
+  echo ">>> Cleaning up" && \
   apt-get purge -y $SCRIPT_PKGS $BUILD_PKGS && \
   apt-get autoremove -y && \
   rm -rf /var/lib/apt/lists/*
-
 
 # expose the ports
 EXPOSE 8000 8070 8071 8072 8073

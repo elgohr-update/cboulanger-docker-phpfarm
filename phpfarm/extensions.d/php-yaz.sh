@@ -1,12 +1,12 @@
-echo "--- installing YAZ for php $V ---------------------"
-
 INST_DIR=/phpfarm/inst/php-$V
 PHP_CMD=$INST_DIR/bin/php
 PEAR_CMD=$INST_DIR/bin/pear
-PECL_CMD=$INST_DIR/bin/pecl
+#PECL_CMD=$INST_DIR/bin/pecl
 
 PHPYAZVERSION=1.2.3
 MAKE_OPTIONS=""
+
+echo ">>> Compiling YAZ $PHPYAZVERSION for PHP $V"
 
 wget https://pecl.php.net/get/yaz-$PHPYAZVERSION.tgz && \
 tar -xzvf yaz-$PHPYAZVERSION.tgz && \

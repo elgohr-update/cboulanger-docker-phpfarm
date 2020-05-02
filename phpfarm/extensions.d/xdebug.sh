@@ -13,7 +13,7 @@ else
     XDBGVERSION="2.9.1"
 fi
 
-echo "--- compiling xdebug $XDBGVERSION for php $V ---------------------"
+echo ">>> Compiling xdebug $XDBGVERSION for PHP $V"
 
 wget https://github.com/xdebug/xdebug/archive/$XDBGVERSION.tar.gz && \
 tar -xzvf $XDBGVERSION.tar.gz && \

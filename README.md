@@ -2,7 +2,7 @@ phpfarm for docker
 ==================
 
 > Notice: this fork has been adapted for the build of https://github.com/cboulanger/bibliograph. It only builds 
-> Versions 7.x. with PEAR and the additional PHP-YAZ extension
+> Versions 7.x. with PEAR and the additional PHP-YAZ extension.
 
 This is a build file to create a [phpfarm](https://github.com/fpoirotte/phpfarm) setup. The resulting docker image will run Apache on different ports with different PHP versions accessed via FCGI. The different PHP CLI binaries are accessible as well.
 

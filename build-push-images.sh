@@ -14,24 +14,28 @@
 # them to Docker hub.
 if [ -z "$1" ]; then
   hubUserRepo='cboulanger/docker-phpfarm'
-  echo "hubuser/repo not provided, defaulting to $hubUserRepo"
 else
   hubUserRepo="$1"
 fi
 
-# Be verbose.
-set -vx
+echo
+echo "Building PHPFarm Docker image '${hubUserRepo}' for Debian Jessie"
+echo "This will take a while. You can follow the output with tail -f ./build.log "
 
-# Need to prefix with Docker.io to build on CircleCI.
-docker build --squash -t ${hubUserRepo}:jessie -t \
-  ${hubUserRepo}:latest -f Dockerfile-Jessie . \
-  > /tmp/build-jessie.log 2>&1
-docker push ${hubUserRepo}:jessie
+docker build --squash --no-cache -t ${hubUserRepo}:jessie -t \
+  ${hubUserRepo}:latest -f Dockerfile-Jessie .  2>&1 \
+  | tee ./build.log \
+  | grep ^">>> "
+
+retval_bash="${PIPESTATUS[0]}" retval_zsh="${pipestatus[1]}"
+retval=$retval_bash $retval_zsh
+if [ $retval != 0 ]; then
+    echo "Build failed with an error:"
+    tail -n 50 ./build.log
+    exit 1
+fi
+
+echo "Pushing the image to the docker hub..."
 docker push ${hubUserRepo}:latest
 
-#docker build --squash -t ${hubUserRepo}:wheezy -f Dockerfile-Wheezy . > /tmp/build-wheezy.log 2>&1
-#docker push ${hubUserRepo}:wheezy
-
-# Disable verbose.
-set +vx
-
+echo "Done."

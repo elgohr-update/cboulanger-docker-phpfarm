@@ -18,7 +18,8 @@ for VERSION in $PHP_FARM_VERSIONS
 do
     cd /phpfarm/src # make absolutely sure we're in the correct directory
 
-    echo "--- compiling version $VERSION -----------------------------------------"
+    echo
+    echo ">>> Compiling PHP version $VERSION"
     # download the bzip
     ./phpdl.sh $VERSION /phpfarm/src/bzips
 
