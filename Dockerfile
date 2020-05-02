@@ -7,8 +7,6 @@ FROM philcryer/min-jessie:latest
 
 LABEL author="Andreas Gohr <andi@splitbrain.org>, Eugene Sia <eugene@eugenesia.co.uk>, Christian Boulanger <info@bibliograph.org>"
 
-c
-
 ENV \
   # Packages needed for running various build scripts.
   SCRIPT_PKGS=" \
