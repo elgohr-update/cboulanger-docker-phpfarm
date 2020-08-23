@@ -53,12 +53,13 @@ ENV \
     libxpm-dev \
     libxslt1-dev \
     libzip-dev \
+    locales \
     # needed for bibliograph
     yaz libyaz4-dev bibutils \
     # php 7.4
     libonig-dev \
   " \
-  # Packages needed to run Apache httpd
+  # Packages needed to run Apache httpd.
   APACHE_PKGS="\
     apache2 \
     apache2-mpm-prefork \
@@ -76,6 +77,22 @@ RUN \
   rm -rf /var/lib/apt/lists/* \
   # Reconfigure Apache
   rm -rf /var/www/*
+ENV LANG=en_US.UTF-8
+
+# Install packages we need for runtime usage.
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    $RUNTIME_PKGS \
+    $APACHE_PKGS && \
+    \
+    # Configure locales
+    sed -i -e "s/# $LANG.*/$LANG.UTF-8 UTF-8/" /etc/locale.gen && \
+    dpkg-reconfigure --frontend=noninteractive locales && \
+    update-locale LANG=$LANG \
+    # Clean up apt package lists.
+    rm -rf /var/lib/apt/lists/* \
+    # Reconfigure Apache
+    rm -rf /var/www/*
 
 # Import our Apache configs.
 COPY var-www /var/www/
