@@ -17,7 +17,6 @@ ENV \
   BUILD_PKGS=" \
     autoconf \
     build-essential \
-    git \
     lemon \
     bison \
     pkg-config \
@@ -27,7 +26,11 @@ ENV \
   RUNTIME_PKGS=" \
     # Needed for PHP and Git to connect with SSL sites.
     ca-certificates \
+    git \
     curl \
+    mysql-client \
+    unzip \
+    locales \
     # apt-get complains that this is an 'essential' package.
     debian-archive-keyring \
     imagemagick \
@@ -66,6 +69,7 @@ ENV \
     # Fcgid mod for Apache - not a build dependency library.
     libapache2-mod-fcgid \
   "
+ENV LANG=en_US.UTF-8
 
 RUN \
   echo ">>> Installing packages we need for runtime usage" && \
@@ -74,25 +78,13 @@ RUN \
   $RUNTIME_PKGS \
   $APACHE_PKGS && \
   # Clean up apt package lists
-  rm -rf /var/lib/apt/lists/* \
+  rm -rf /var/lib/apt/lists/* && \
   # Reconfigure Apache
-  rm -rf /var/www/*
-ENV LANG=en_US.UTF-8
-
-# Install packages we need for runtime usage.
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-    $RUNTIME_PKGS \
-    $APACHE_PKGS && \
-    \
-    # Configure locales
-    sed -i -e "s/# $LANG.*/$LANG.UTF-8 UTF-8/" /etc/locale.gen && \
-    dpkg-reconfigure --frontend=noninteractive locales && \
-    update-locale LANG=$LANG \
-    # Clean up apt package lists.
-    rm -rf /var/lib/apt/lists/* \
-    # Reconfigure Apache
-    rm -rf /var/www/*
+  rm -rf /var/www/* && \
+  # Configure locales
+  sed -i -e "s/^# $LANG/$LANG/" /etc/locale.gen && \
+  dpkg-reconfigure --frontend=noninteractive locales && \
+  update-locale LANG=$LANG
 
 # Import our Apache configs.
 COPY var-www /var/www/

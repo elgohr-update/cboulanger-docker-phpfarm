@@ -1,7 +1,7 @@
 phpfarm for docker
 ==================
 
-This is a fork of https://github.com/splitbrain/docker-phpfarm  adapted
+> This is a fork of https://github.com/splitbrain/docker-phpfarm  adapted
 for the build of https://github.com/cboulanger/bibliograph. It only
 builds > Versions 7.x. and adds PEAR and the PHP-YAZ extension.
 

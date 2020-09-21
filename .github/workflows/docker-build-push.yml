@@ -2,6 +2,10 @@ name: Publish Docker Image
 on: [push]
 jobs:
   build:
+    docker build -t cboulanger/docker-phpfarm:latest .
+  test:
+    ./test.sh
+  publish:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
