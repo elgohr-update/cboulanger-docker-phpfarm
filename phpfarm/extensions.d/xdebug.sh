@@ -1,14 +1,6 @@
 # compile xdebug
-if [ "$V" == "5.1" ] || [ "$V" == "5.2" ] || [ "$V" == "5.3" ]; then
-    XDBGVERSION="XDEBUG_2_2_7" # old release for old PHP versions
-elif [ "$V" == "5.4" ]; then
-    XDBGVERSION="XDEBUG_2_4_1" # old release for old PHP versions
-elif [[ $VERSION == *"RC"* ]]; then
-    XDBGVERSION="master"       # master for RCs
-elif [ "$V" == "5.5" ] || [ "$V" == "5.6" ]; then
-    XDBGVERSION="XDEBUG_2_5_5" # 2.5.X release for PHP 5.5 and 5.6
-elif [ "$V" == "7.0" ] ; then
-    XDBGVERSION="2.7.2"
+if [ "$V" == "8.0" ]; then
+    XDBGVERSION="3.0.4"
 else
     XDBGVERSION="2.9.1"
 fi

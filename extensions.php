@@ -2,7 +2,7 @@
 /**
  * This builds the table of supported PHP extensions
  */
-$ports=array(8070,8071,8072,8073,8074);
+$ports=array(8071,8072,8073,8074,8080);
 
 # Ensure that chars show in browser correctly.
 header('Content-Type: text/plain; charset=utf-8');

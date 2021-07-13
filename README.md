@@ -12,11 +12,10 @@ FCGI. The different PHP CLI binaries are accessible as well.
 
 Port | PHP Version | Binary
 -----|-------------|-----------------------
-8070 | 7.0.33      | php-7.0
 8071 | 7.1.25      | php-7.1
 8072 | 7.2.13      | php-7.2
 8073 | 7.3.0       | php-7.3 
-8000 | nightly     | php-x.x 
+8080 | 8.0.0       | php-8.0 
 
 
 Building the image
@@ -27,8 +26,8 @@ After cloning the git repository, simply run the following command:
     docker build -t cboulanger/docker-phpfarm:latest .
    
 This will setup a Debian base system, install phpfarm, download and
-compile the different PHP versions, extensions and setup Apache. So, yes
-this will take a while. See the next section for a faster alternative.
+compile the different PHP versions, extensions and setup Apache. 
+This will take a while. See the next section for a faster alternative.
 
 Downloading the image
 ---------------------
@@ -48,7 +47,7 @@ will be used as the document root for the Apache server and the server
 itself will run with the same user id as your current user (`$UID`).
 
     docker run --rm -t -i -e APACHE_UID=$UID -v $PWD:/var/www:rw \
-      -p 8070:8070 -p 8071:8071 -p 8072:8072 -p 8073:8073 -p 8074:8074 \
+      -p 8070:8070 -p 8071:8071 -p 8072:8072 -p 8073:8073 -p 8074:8074 -p 8080:8080 \
       cboulanger/docker-phpfarm
 
 You can access the Apache/PHP via localhost. Eg. `http://localhost:8073`
@@ -110,7 +109,7 @@ Here's a list of the extensions available in each of the PHP
 versions available in the Jessie image. It should cover all the
 default extensions plus a few popular ones and xdebug for debugging.
 
-Extension    | PHP 7.0 | PHP 7.1 | PHP 7.2 | PHP 7.3 | nightly
+Extension    |    ---  | PHP 7.1 | PHP 7.2 | PHP 7.3 | PHP 8.0
 ------------:|:-------:|:-------:|:-------:|:-------:|:-------:
 bcmath       |    ✓    |    ✓    |    ✓    |    ✓    |    ✓
 bz2          |    ✓    |    ✓    |    ✓    |    ✓    |    ✓

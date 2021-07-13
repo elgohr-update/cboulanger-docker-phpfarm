@@ -3,7 +3,7 @@
 #
 
 # we use Debian as the host OS
-FROM philcryer/min-jessie:latest
+FROM debian:jessie-slim
 
 LABEL author="Andreas Gohr <andi@splitbrain.org>, Eugene Sia <eugene@eugenesia.co.uk>, Christian Boulanger <info@bibliograph.org>"
 
@@ -15,6 +15,7 @@ ENV \
   " \
   # Packages only needed for PHP build.
   BUILD_PKGS=" \
+    file \
     autoconf \
     build-essential \
     git \
@@ -25,10 +26,8 @@ ENV \
   " \
   # PHP runtime dependencies.
   RUNTIME_PKGS=" \
-    # Needed for PHP and Git to connect with SSL sites.
     ca-certificates \
     curl \
-    # apt-get complains that this is an 'essential' package.
     debian-archive-keyring \
     imagemagick \
     libbz2-dev \
@@ -43,6 +42,7 @@ ENV \
     libmcrypt-dev \
     libmhash-dev \
     libmysqlclient-dev \
+    libonig-dev \
     libpng-dev \
     libpq-dev \
     libsasl2-dev \
@@ -54,9 +54,7 @@ ENV \
     libxslt1-dev \
     libzip-dev \
     # needed for bibliograph
-    yaz libyaz4-dev bibutils \
-    # php 7.4
-    libonig-dev \
+    yaz libyaz-dev bibutils \
   " \
   # Packages needed to run Apache httpd
   APACHE_PKGS="\
@@ -85,11 +83,7 @@ COPY apache /etc/apache2/
 COPY phpfarm /phpfarm_mod
 
 # The PHP versions to compile.
-ENV PHP_FARM_VERSIONS="7.0.33-pear 7.1.33-pear 7.2.25-pear 7.3.12-pear 7.4.0-pear" \
-  \
-  # Flags for C Compiler Loader: make php 5.3 work again.
-  LDFLAGS="-lssl -lcrypto -lstdc++" \
-  \
+ENV PHP_FARM_VERSIONS="7.1.33-pear 7.2.25-pear 7.3.12-pear 7.4.13-pear 8.0.0-pear" \
   # Add path to built PHP executables, for module building and for Apache
   PATH="/phpfarm/inst/bin/:$PATH"
 
@@ -114,7 +108,7 @@ RUN \
   rm -rf /var/lib/apt/lists/*
 
 # expose the ports
-EXPOSE 8000 8070 8071 8072 8073
+EXPOSE 8071 8072 8073 8074 8080
 
 # run it
 WORKDIR /var/www
