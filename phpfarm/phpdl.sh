@@ -1,6 +1,8 @@
 #!/bin/bash
 
-VERSION=$1
+set -e
+
+VERSION=$(echo $1 | sed -e "s/-pear//")
 DIR=$2
 OUT="$DIR/php-$VERSION.tar.bz2"
 EXT="$DIR/../php-$VERSION"
@@ -24,22 +26,13 @@ if [ ! -d "$EXT" ]; then
 fi
 
 # construct URL
-if [[ $VERSION == *"RC"* ]]; then
-    URL="https://downloads.php.net/~pollita/php-$VERSION.tar.bz2"
-elif [[ $VERSION == "x.x.x" ]]; then
-    URL="https://codeload.github.com/php/php-src/legacy.tar.gz/master"
-    OUT="$DIR/php-$VERSION.tar.gz"
-elif [ $VERSION \< "5.6" ]; then
-    URL="http://museum.php.net/php5/php-$VERSION.tar.bz2"
-else
-    URL="http://php.net/get/php-$VERSION.tar.bz2/from/this/mirror"
-fi
+URL="https://secure.php.net/get/php-$VERSION.tar.bz2"
 
 # do nothing if file exists
 [ -f "$OUT" ] && exit 0
 
 # download
-echo "downloading $URL -> $OUT, extracting to $EXT"
-curl -L --silent --show-error --fail -o "$OUT" "$URL" && \
+echo "Downloading $URL -> $OUT..."
+curl -L --silent --show-error --fail -o "$OUT" "$URL" || die "failed to download"
+echo "Extracting to $EXT ..."
 tar -xvf "$OUT" -C "$EXT" --strip-components 1
-exit $?

@@ -9,12 +9,7 @@
 DOCKER_IMG=cboulanger/docker-phpfarm
 
 # Tag of image to test e.g. 'latest', 'wheezy'.
-TAG=$1
-
-
-if [ -z "$TAG" ]; then
-    TAG=jessie
-fi
+TAG=latest
 
 # Ports to test for.
 ports='8071 8072 8073 8074 8080'
@@ -71,8 +66,11 @@ if [ -z "$CIRCLECI" ]; then
     php extensions.php
 fi
 
-docker kill $container
-docker rm $container
+docker kill $container > /dev/null
+docker rm $container > /dev/null
+
+echo
+echo "Stopped and removed container"
 
 # Return the port test result as representing the entire script's result.
 exit $portTestResult

@@ -3,7 +3,10 @@ phpfarm for docker
 
 This is a fork of https://github.com/splitbrain/docker-phpfarm  adapted
 for the build of https://github.com/cboulanger/bibliograph. It only
-builds > Versions 7.x. and adds PEAR and the PHP-YAZ extension.
+builds PHP versions => 7.1.x and adds PEAR and the PHP-YAZ extension.
+
+> :warning: The dependencies used are really old - the base image is Debian!
+> Unfortunately, I have no time to upgrade them. You have been warned.
 
 The build file creates a [phpfarm](https://github.com/fpoirotte/phpfarm)
 setup. The resulting docker image will run Apache on
@@ -23,7 +26,7 @@ Building the image
 
 After cloning the git repository, simply run the following command:
 
-    docker build -t cboulanger/docker-phpfarm:latest .
+    ./build.sh
    
 This will setup a Debian base system, install phpfarm, download and
 compile the different PHP versions, extensions and setup Apache. 
@@ -32,8 +35,9 @@ This will take a while. See the next section for a faster alternative.
 Downloading the image
 ---------------------
 
-Simply downloading the ready made image from Docker Hub
-is probably the fastest way. Just run one of these:
+If you do not intend to adapt the image for your purposes,
+you can simply downloading the ready made image from Docker
+Hub:
 
     docker pull cboulanger/docker-phpfarm
 

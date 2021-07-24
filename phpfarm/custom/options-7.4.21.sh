@@ -20,6 +20,6 @@ configoptions="\
     --with-xsl=/usr \
     --enable-embedded-mysqli"
 
-echo "--- loaded custom/options-8.0.0.sh ---"
+echo "--- loaded custom/options-7.4.21.sh ---"
 echo $configoptions
 echo "---------------------------------------"

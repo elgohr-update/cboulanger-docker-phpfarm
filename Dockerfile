@@ -65,7 +65,7 @@ ENV \
   "
 
 RUN \
-  echo ">>> Installing packages we need for runtime usage" && \
+  echo ">>> Installing runtime packages" && \
   apt-get update && \
   apt-get install -y --no-install-recommends \
   $RUNTIME_PKGS \
@@ -83,26 +83,26 @@ COPY apache /etc/apache2/
 COPY phpfarm /phpfarm_mod
 
 # The PHP versions to compile.
-ENV PHP_FARM_VERSIONS="7.1.33-pear 7.2.25-pear 7.3.12-pear 7.4.13-pear 8.0.0-pear" \
+#ENV PHP_FARM_VERSIONS="7.1.33-pear 7.2.25-pear 7.3.29-pear 7.4.21-pear 8.0.0-pear" \
+ENV PHP_FARM_VERSIONS="7.4.21-pear 8.0.0-pear" \
   # Add path to built PHP executables, for module building and for Apache
   PATH="/phpfarm/inst/bin/:$PATH"
 
 RUN \
-  echo ">>> Installing packages needed for build" && \
+  echo ">>> Downloading & installing prerequisites..." && \
   apt-get update && \
   apt-get install -y --no-install-recommends $SCRIPT_PKGS $BUILD_PKGS && \
-  echo ">>> Downloading and patching PHPFarm" && \
   wget -O /phpfarm.tar.gz https://github.com/fpoirotte/phpfarm/archive/v0.3.0.tar.gz && \
   mkdir /phpfarm && \
   tar -xf /phpfarm.tar.gz -C /phpfarm --strip 1 && \
   rm -rf /phpfarm/src/bzips /phpfarm/src/custom && \
   mv /phpfarm_mod/* /phpfarm/src/ && \
   sleep 5s && \
-  rmdir /phpfarm_mod && \
-  echo ">>> Building all PHP versions" && \
+  rmdir /phpfarm_mod
+
+RUN \
   cd /phpfarm/src && \
   ./docker.sh && \
-  echo ">>> Cleaning up" && \
   apt-get purge -y $SCRIPT_PKGS $BUILD_PKGS && \
   apt-get autoremove -y && \
   rm -rf /var/lib/apt/lists/*

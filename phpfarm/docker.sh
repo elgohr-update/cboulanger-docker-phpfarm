@@ -1,6 +1,7 @@
 #!/bin/bash
 # this script builds everything for docker
 
+set -e
 
 if [ -z "$PHP_FARM_VERSIONS" ]; then
     echo "PHP versions not set! Aborting setup" >&2
