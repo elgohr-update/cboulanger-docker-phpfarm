@@ -9,7 +9,7 @@ echo
 echo "Building PHPFarm Docker image '${REPO}'"
 echo "This will take a while. You can follow the output with tail -f ./build.log "
 
-docker build --squash --no-cache --progress plain -t ${REPO}:latest -t \
+docker build --progress plain -t ${REPO}:latest -t \
   ${REPO}:latest .  2>&1 \
   | tee ./build.log \
   | grep -o ">>> [^\"]*$"
@@ -21,5 +21,7 @@ if [ $retval != 0 ]; then
     tail -n 50 ./build.log
     exit 1
 fi
+
+./test.sh
 
 echo "Done."

@@ -20,7 +20,7 @@ for port in $ports; do
   publishOption="$publishOption -p ${port}:${port}"
 done
 
-container=$( docker run -d $publishOption $DOCKER_IMG:$TAG )
+container=$( docker run -d $publishOption --name phpfarm $DOCKER_IMG:$TAG )
 
 if [ -z "$container" ]; then
     echo -e "\e[31mFailed to start container\e[0m"
@@ -38,16 +38,7 @@ portTestResult=0
 # Test if all required ports are showing a PHP version.
 for port in $ports; do
 
-    if [ -z "$CIRCLECI" ]; then
-        # Not in Circle CI, curl to localhost to access container directly.
-        result=$(curl --silent http://localhost:$port/ | grep -Eo 'PHP Version [0-9]+\.[0-9]+\.[0-9]+')
-    else
-        # In CircleCI, cannot access container port via localhost.
-        # Build runner and created Docker containers run in separate
-        # environments. So scripts in build runner (the job) cannot
-        # communicate with Docker services.
-        result=$(docker exec $container curl --silent http://localhost:$port/ | grep -Eo 'PHP Version [0-9]+\.[0-9]+\.[0-9]+')
-    fi
+    result=$(curl --silent http://localhost:$port/ | grep -Eo 'PHP Version [0-9]+\.[0-9]+\.[0-9]+')
 
     if [ -z "$result" ]; then
         echo -e "Port $port: \e[31mFAILED\e[0m"
@@ -59,15 +50,11 @@ for port in $ports; do
 done
 
 # Display status of PHP extensions.
-# extensions.php curls to localhost, which doesn't work in a CircleCI env
-# where we cannot access the created container directly.
-if [ -z "$CIRCLECI" ]; then
-    echo -e 'Checking extensions...\n\n'
-    php extensions.php
-fi
+echo -e 'Checking extensions...\n\n'
+docker exec -it phpfarm php-7.4 /extensions.php
 
-docker kill $container > /dev/null
-docker rm $container > /dev/null
+docker kill phpfarm > /dev/null
+docker rm phpfarm > /dev/null
 
 echo
 echo "Stopped and removed container"

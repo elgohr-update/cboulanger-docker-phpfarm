@@ -36,7 +36,5 @@ rm -rf phpyaz-*
 if $PHP_CMD -i | grep yaz --quiet && echo '<?php exit(function_exists("yaz_connect")?0:1);' | $PHP_CMD ; then echo "YAZ is installed"; else echo "YAZ installation failed"; exit 1; fi;
 
 # install needed PEAR_CMD libraries; not compatible with php 7.4
-if ! [[ "$V" == "7.4" || "$V" == "8.0"  ]]  ; then
-  $PEAR_CMD install Structures_LinkedList-0.2.2
-  $PEAR_CMD install File_MARC
-fi
+$PEAR_CMD install Structures_LinkedList-0.2.2 || true
+$PEAR_CMD install File_MARC || true

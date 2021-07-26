@@ -26,7 +26,7 @@ if [ ! -d "$EXT" ]; then
 fi
 
 # construct URL
-URL="https://secure.php.net/get/php-$VERSION.tar.bz2"
+URL="https://www.php.net/distributions/php-$VERSION.tar.bz2"
 
 # do nothing if file exists
 [ -f "$OUT" ] && exit 0
