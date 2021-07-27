@@ -1,4 +1,5 @@
 configoptions="\
+    --enable-bcmath \
     --enable-calendar \
     --enable-embedded-mysqli \
     --enable-gd \
@@ -22,8 +23,9 @@ configoptions="\
     --with-pgsql \
     --with-xsl=/usr \
     --with-zip \
+    --with-zlib \
 "
 
-echo "--- loaded custom/options-8.0.0.sh ---"
+echo "--- loaded custom/options-7.4.21.sh ---"
 echo $configoptions
 echo "---------------------------------------"

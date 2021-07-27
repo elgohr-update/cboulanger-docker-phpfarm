@@ -83,7 +83,7 @@ COPY apache /etc/apache2/
 COPY phpfarm /phpfarm_mod
 
 # The PHP versions to compile.
-ENV PHP_FARM_VERSIONS="7.1.33-pear 7.2.25-pear 7.3.29-pear 7.4.21-pear 8.0.0-pear" \
+ENV PHP_FARM_VERSIONS="7.1.33-pear 7.2.25-pear 7.3.29-pear 7.4.22-pear 8.0.8-pear" \
   # Add path to built PHP executables, for module building and for Apache
   PATH="/phpfarm/inst/bin/:$PATH"
 

@@ -110,8 +110,9 @@ Supported PHP extensions
 ------------------------
 
 Here's a list of the extensions available in each of the PHP
-versions available in the Jessie image. It should cover all the
-default extensions plus a few popular ones and xdebug for debugging.
+versions available. It should cover all the
+default extensions plus a few popular ones, yaz for querying library 
+databases and xdebug for debugging.
 
 Extension    |    ---  | PHP 7.1 | PHP 7.2 | PHP 7.3 | PHP 8.0
 ------------:|:-------:|:-------:|:-------:|:-------:|:-------:
