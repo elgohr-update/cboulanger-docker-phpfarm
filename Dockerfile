@@ -18,7 +18,6 @@ ENV \
     file \
     autoconf \
     build-essential \
-    git \
     lemon \
     bison \
     pkg-config \
@@ -90,16 +89,14 @@ ENV PHP_FARM_VERSIONS="7.1.33-pear 7.2.25-pear 7.3.29-pear 7.4.22-pear 8.0.8-pea
 RUN \
   echo ">>> Downloading & installing prerequisites..." && \
   apt-get update && \
-  apt-get install -y --no-install-recommends $SCRIPT_PKGS $BUILD_PKGS && \
+  apt-get install -y --no-install-recommends $SCRIPT_PKGS $BUILD_PKGS git && \
   wget -O /phpfarm.tar.gz https://github.com/fpoirotte/phpfarm/archive/v0.3.0.tar.gz && \
   mkdir /phpfarm && \
   tar -xf /phpfarm.tar.gz -C /phpfarm --strip 1 && \
   rm -rf /phpfarm/src/bzips /phpfarm/src/custom && \
   mv /phpfarm_mod/* /phpfarm/src/ && \
   sleep 5s && \
-  rmdir /phpfarm_mod
-
-RUN \
+  rmdir /phpfarm_mod \
   cd /phpfarm/src && \
   ./docker.sh && \
   apt-get purge -y $SCRIPT_PKGS $BUILD_PKGS && \
