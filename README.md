@@ -1,12 +1,14 @@
 phpfarm for docker
 ==================
 
-> This is a fork of https://github.com/splitbrain/docker-phpfarm  adapted
+This is a fork of https://github.com/splitbrain/docker-phpfarm  adapted
 for the build of https://github.com/cboulanger/bibliograph. It only
-builds PHP versions => 7.1.x and adds PEAR and the PHP-YAZ extension.
+builds PHP versions => 7.1.x and adds PEAR/PECL and the PHP-YAZ extension.
 
-> :warning: The dependencies used are really old - the base image is Debian!
-> Unfortunately, I have no time to upgrade them. You have been warned.
+> :warning: The dependencies used are really old - the base image is Debian 8.
+> Since this image is only meant to be used for local development, this should
+> be ok. However, PRs which upgrade the base image to a current Debian/Ubuntu
+> version are very welcome!
 
 The build file creates a [phpfarm](https://github.com/fpoirotte/phpfarm)
 setup. The resulting docker image will run Apache on
@@ -15,10 +17,11 @@ FCGI. The different PHP CLI binaries are accessible as well.
 
 Port | PHP Version | Binary
 -----|-------------|-----------------------
-8071 | 7.1.25      | php-7.1
-8072 | 7.2.13      | php-7.2
-8073 | 7.3.0       | php-7.3 
-8080 | 8.0.0       | php-8.0 
+8071 | 7.1.33      | php-7.1
+8072 | 7.2.25      | php-7.2
+8073 | 7.3.29      | php-7.3
+8074 | 7.4.22      | php-7.4
+8080 | 8.0.8       | php-8.0 
 
 
 Building the image
@@ -35,12 +38,10 @@ This will take a while. See the next section for a faster alternative.
 Downloading the image
 ---------------------
 
-If you do not intend to adapt the image for your purposes,
-you can simply downloading the ready made image from Docker
-Hub:
+If you do not intend to adapt the image for your purposes, you
+can simply downloading the ready made image from Docker Hub:
 
     docker pull cboulanger/docker-phpfarm
-
 
 Running the container
 ---------------------
@@ -51,11 +52,11 @@ will be used as the document root for the Apache server and the server
 itself will run with the same user id as your current user (`$UID`).
 
     docker run --rm -t -i -e APACHE_UID=$UID -v $PWD:/var/www:rw \
-      -p 8070:8070 -p 8071:8071 -p 8072:8072 -p 8073:8073 -p 8074:8074 -p 8080:8080 \
+      -p 8071:8071 -p 8072:8072 -p 8073:8073 -p 8074:8074 -p 8080:8080 \
       cboulanger/docker-phpfarm
 
-You can access the Apache/PHP via localhost. Eg. `http://localhost:8073`
-for the PHP 7.3 version. 
+You can access the Apache/PHP via localhost. Eg. `http://localhost:8074`
+for the PHP 7.4 version. 
 
 Above command will also remove the container again when the
 process is aborted with CTRL-C (thanks to the `--rm` option).
@@ -109,12 +110,11 @@ Of course you can always reconfigure xdebug through a custom ini file as describ
 Supported PHP extensions
 ------------------------
 
-Here's a list of the extensions available in each of the PHP
-versions available. It should cover all the
-default extensions plus a few popular ones, yaz for querying library 
-databases and xdebug for debugging.
+Here's a list of the extensions available in each of the PHP versions
+available. It should cover all the default extensions plus a few popular
+ones, yaz for querying library databases and xdebug for debugging.
 
-Extension    |    ---  | PHP 7.1 | PHP 7.2 | PHP 7.3 | PHP 8.0
+Extension    | PHP 7.1 | PHP 7.2 | PHP 7.3 | PHP 7.4 | PHP 8.0
 ------------:|:-------:|:-------:|:-------:|:-------:|:-------:
 bcmath       |    ✓    |    ✓    |    ✓    |    ✓    |    ✓
 bz2          |    ✓    |    ✓    |    ✓    |    ✓    |    ✓
@@ -124,28 +124,24 @@ ctype        |    ✓    |    ✓    |    ✓    |    ✓    |    ✓
 curl         |    ✓    |    ✓    |    ✓    |    ✓    |    ✓
 date         |    ✓    |    ✓    |    ✓    |    ✓    |    ✓
 dom          |    ✓    |    ✓    |    ✓    |    ✓    |    ✓
-ereg         |         |         |         |         |
-exif         |    ✓    |    ✓    |    ✓    |    ✓    |    ✓
+exif         |    ✓    |    ✓    |    ✓    |         |
 fileinfo     |    ✓    |    ✓    |    ✓    |    ✓    |    ✓
 filter       |    ✓    |    ✓    |    ✓    |    ✓    |    ✓
-ftp          |    ✓    |    ✓    |    ✓    |    ✓    |    ✓
+ftp          |    ✓    |    ✓    |    ✓    |         |
 gd           |    ✓    |    ✓    |    ✓    |    ✓    |    ✓
 gettext      |    ✓    |    ✓    |    ✓    |    ✓    |    ✓
 hash         |    ✓    |    ✓    |    ✓    |    ✓    |    ✓
 iconv        |    ✓    |    ✓    |    ✓    |    ✓    |    ✓
-imap         |    ✓    |    ✓    |    ✓    |    ✓    |    ✓
 intl         |    ✓    |    ✓    |    ✓    |    ✓    |    ✓
 json         |    ✓    |    ✓    |    ✓    |    ✓    |    ✓
 ldap         |    ✓    |    ✓    |    ✓    |    ✓    |    ✓
 libxml       |    ✓    |    ✓    |    ✓    |    ✓    |    ✓
 mbstring     |    ✓    |    ✓    |    ✓    |    ✓    |    ✓
-mcrypt       |    ✓    |    ✓    |         |         |
-mhash        |         |         |         |         |
-mysql        |         |         |         |         |
+mcrypt       |    ✓    |         |         |         |
 mysqli       |    ✓    |    ✓    |    ✓    |    ✓    |    ✓
 mysqlnd      |    ✓    |    ✓    |    ✓    |    ✓    |    ✓
 openssl      |    ✓    |    ✓    |    ✓    |    ✓    |    ✓
-pcntl        |    ✓    |    ✓    |    ✓    |    ✓    |    ✓
+pcntl        |    ✓    |    ✓    |    ✓    |         |
 pcre         |    ✓    |    ✓    |    ✓    |    ✓    |    ✓
 pdo          |    ✓    |    ✓    |    ✓    |    ✓    |    ✓
 pdo_mysql    |    ✓    |    ✓    |    ✓    |    ✓    |    ✓
@@ -157,20 +153,19 @@ posix        |    ✓    |    ✓    |    ✓    |    ✓    |    ✓
 reflection   |    ✓    |    ✓    |    ✓    |    ✓    |    ✓
 session      |    ✓    |    ✓    |    ✓    |    ✓    |    ✓
 simplexml    |    ✓    |    ✓    |    ✓    |    ✓    |    ✓
-soap         |    ✓    |    ✓    |    ✓    |    ✓    |    ✓
-sockets      |    ✓    |    ✓    |    ✓    |    ✓    |    ✓
+soap         |    ✓    |    ✓    |    ✓    |         |
+sockets      |    ✓    |    ✓    |    ✓    |         |
 spl          |    ✓    |    ✓    |    ✓    |    ✓    |    ✓
-sqlite       |         |         |         |         |
 sqlite3      |    ✓    |    ✓    |    ✓    |    ✓    |    ✓
 standard     |    ✓    |    ✓    |    ✓    |    ✓    |    ✓
 tokenizer    |    ✓    |    ✓    |    ✓    |    ✓    |    ✓
-wddx         |    ✓    |    ✓    |    ✓    |    ✓    |    ✓
-xdebug       |    ✓    |    ✓    |    ✓    |    ✓    |
+wddx         |    ✓    |    ✓    |    ✓    |         |
+xdebug       |    ✓    |    ✓    |    ✓    |    ✓    |    ✓
 xml          |    ✓    |    ✓    |    ✓    |    ✓    |    ✓
 xmlreader    |    ✓    |    ✓    |    ✓    |    ✓    |    ✓
 xmlwriter    |    ✓    |    ✓    |    ✓    |    ✓    |    ✓
 xsl          |    ✓    |    ✓    |    ✓    |    ✓    |    ✓
-yaz          |    ✓    |    ✓    |    ✓    |    ✓    |    ?
+yaz          |    ✓    |    ✓    |    ✓    |    ✓    |    ✓
 zip          |    ✓    |    ✓    |    ✓    |    ✓    |    ✓
 zlib         |    ✓    |    ✓    |    ✓    |    ✓    |    ✓
 
