@@ -13,7 +13,7 @@ ENV \
     debian-keyring \
     wget \
   " \
-  # Packages only needed for PHP build.
+  # Packages only needed for PHP build, will be uninstalled after build
   BUILD_PKGS=" \
     file \
     autoconf \
@@ -25,6 +25,7 @@ ENV \
   " \
   # PHP runtime dependencies.
   RUNTIME_PKGS=" \
+    git \
     ca-certificates \
     curl \
     debian-archive-keyring \
@@ -89,14 +90,14 @@ ENV PHP_FARM_VERSIONS="7.1.33-pear 7.2.25-pear 7.3.29-pear 7.4.22-pear 8.0.8-pea
 RUN \
   echo ">>> Downloading & installing prerequisites..." && \
   apt-get update && \
-  apt-get install -y --no-install-recommends $SCRIPT_PKGS $BUILD_PKGS git && \
+  apt-get install -y --no-install-recommends $SCRIPT_PKGS $BUILD_PKGS && \
   wget -O /phpfarm.tar.gz https://github.com/fpoirotte/phpfarm/archive/v0.3.0.tar.gz && \
   mkdir /phpfarm && \
   tar -xf /phpfarm.tar.gz -C /phpfarm --strip 1 && \
   rm -rf /phpfarm/src/bzips /phpfarm/src/custom && \
   mv /phpfarm_mod/* /phpfarm/src/ && \
   sleep 5s && \
-  rmdir /phpfarm_mod \
+  rmdir /phpfarm_mod && \
   cd /phpfarm/src && \
   ./docker.sh && \
   apt-get purge -y $SCRIPT_PKGS $BUILD_PKGS && \
