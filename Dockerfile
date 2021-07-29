@@ -26,6 +26,7 @@ ENV \
   # PHP runtime dependencies.
   RUNTIME_PKGS=" \
     git \
+    unzip \
     ca-certificates \
     curl \
     debian-archive-keyring \
