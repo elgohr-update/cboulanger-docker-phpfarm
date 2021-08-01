@@ -26,6 +26,7 @@ ENV \
   # PHP runtime dependencies.
   RUNTIME_PKGS=" \
     git \
+    zip \
     unzip \
     ca-certificates \
     curl \
