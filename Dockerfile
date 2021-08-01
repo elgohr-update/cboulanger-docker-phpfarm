@@ -54,6 +54,7 @@ ENV \
     libxpm-dev \
     libxslt1-dev \
     libzip-dev \
+    mariadb-client \
     # needed for bibliograph
     yaz libyaz-dev bibutils \
   " \
