@@ -12,7 +12,7 @@ jobs:
       - name: Test
         run: ./test.sh
       - name: Publish to Registry
-        uses: elgohr/Publish-Docker-Github-Action@master
+        uses: elgohr/Publish-Docker-Github-Action@v5
         with:
           name: cboulanger/docker-phpfarm
           username: ${{ secrets.DOCKER_USERNAME }}
